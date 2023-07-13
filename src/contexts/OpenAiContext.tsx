@@ -25,13 +25,35 @@ export function OpenAiProvider({ children }: { children: any }) {
     const prompt = `
       Please create a unique list of ${count} trivia questions on the topic of ${category}, in JSON format.  
       The ${count} questions should be ordered in increasing difficulty, from easy to very hard.  
-      Each question should have ${configSettings.answersPerQuestion} answers, and the correct answer should be listed first.  
+      Each question should have exactly ${configSettings.answersPerQuestion} answers, and the correct answer should be listed first.  
       There should only be one correct answer.
-      Remember the words in the answers shouldn't occur in the question itself.
-      The JSON should be formatted like so: [  {    "question": "...",    "answers": ["...", "...", "...", "..."] } ]`;
-    
-    const response = await askOpenAi(prompt);
-    const inner = JSON.parse(response.choices[0].text);
+    `
+    const schema = {
+      "type": "object",
+      "properties": {
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string"
+              },
+              "answers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["question", "answers"]
+          }
+        }
+      }
+    }
+
+    const response = await askOpenAi(prompt, schema);
+    const inner = JSON.parse(response.choices[0].message.function_call.arguments).questions;
     
     let result = [] as Model.Question[];
 
@@ -55,16 +77,24 @@ export function OpenAiProvider({ children }: { children: any }) {
     return result;
   }
 
-  const getRequestBody = (prompt: string) :any => {
+  const getRequestBody = (prompt: string, schema: object) :any => {
     const body =     
-      { 
-        "prompt": prompt,
+      {
+        "model": "gpt-4",
+        "messages": [
+             {
+                "role": "user",
+                "content": prompt
+             }
+            ],
         "temperature": 0.7,
         "max_tokens": 1000,
         "top_p": 1,
         "frequency_penalty": 0,
         "presence_penalty": 0.5,
-        "stop": ["\"\"\""]
+        "stop": ["\"\"\""],
+        "functions": [{"name": "set-json", "parameters": schema}],
+        "function_call": {"name": "set-json"}
       }
 
     return body;
@@ -82,8 +112,9 @@ export function OpenAiProvider({ children }: { children: any }) {
     return headers;
   }
   
-  const askOpenAi = async (prompt: string): Promise<any> => {   
-    const body = getRequestBody(prompt);
+  const askOpenAi = async (prompt: string, schema: object): Promise<any> => {   
+    console.log(prompt);
+    const body = getRequestBody(prompt, schema);
     const header = getRequestHeaders();
 
     const result = await axios.post(configSettings.openAiApiRootUrl, body, header)
