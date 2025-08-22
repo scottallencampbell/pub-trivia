@@ -20,11 +20,9 @@ module.exports = {
       // => @media (min-width: 1024px) { ... }
       xl: "1200px",
       // => @media (min-width: 1280px) { ... }
-      xxl: "1400px"
+      xxl: "1400px",
     },
-    fontFamily: {
-     
-    },
+    fontFamily: {},
     colors: {
       blue: "#121521",
       white: "#FFFFFF",
@@ -42,4 +40,4 @@ module.exports = {
     },
   },
   plugins: [],
-};
+}

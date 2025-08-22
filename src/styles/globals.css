@@ -13,7 +13,6 @@ body {
   background-color: #000000 !important;
 }
 
-
 #overlay.enabled {
   opacity: 0.5;
   filter: alpha(opacity=50);
@@ -91,13 +90,13 @@ main {
 
 #question .selected {
   background-color: #aa0000;
-  border: solid 2px #ffffff !important;
+  border: solid 4px #ffffff !important;
   color: #ffffff;
 }
 
 #question .selected.correct {
   background-color: #00aa00;
-  border: solid 2px #ffffff;
+  border: solid 4px #ffffff;
   color: #ffffff;
 }
 
@@ -110,7 +109,6 @@ main {
   font-size: 30px;
   display: inline-block;
 } */
-
 
 /* custom hight  */
 .custom_hight {

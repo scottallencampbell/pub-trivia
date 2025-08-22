@@ -1,22 +1,14 @@
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios"
 
-interface IGameContext {
- 
+interface IGameContext {}
+
+export const GameContext = (): IGameContext => {
+  return <div></div>
 }
 
-export const GameContext = (): IGameContext => {  
-  return (
-    <div></div>
-  )
-}
-    
-const Context = createContext({} as IGameContext);
+const Context = createContext({} as IGameContext)
 
 export function GameProvider({ children }: { children: any }) {
-  return (
-    <Context.Provider value={true}>
-      {children}
-    </Context.Provider>
-  )
+  return <Context.Provider value={true}>{children}</Context.Provider>
 }
