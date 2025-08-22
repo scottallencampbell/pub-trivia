@@ -1,0 +1,6 @@
+{
+  "openAiApiRootUrl": "https://api.openai.com/v1/chat/completions",
+  "categoriesPerGame": 6,
+  "questionsPerCategory": 5,
+  "answersPerQuestion": 4
+}
