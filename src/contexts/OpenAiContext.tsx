@@ -77,51 +77,10 @@ export function OpenAiProvider({ children }: { children: any }) {
     return result
   }
 
-  const getRequestBody = (prompt: string, schema: object): any => {
-    const body = {
-      model: "gpt-4",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0.5,
-      stop: ['"""'],
-      functions: [{ name: "set-json", parameters: schema }],
-      function_call: { name: "set-json" },
-    }
-
-    return body
-  }
-
-  const getRequestHeaders = (): any => {
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY
-    if (!apiKey) {
-      throw new Error("Missing REACT_APP_OPENAI_API_KEY environment variable")
-    }
-
-    const headers = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + apiKey,
-      },
-    }
-
-    return headers
-  }
-
   const askOpenAi = async (prompt: string, schema: object): Promise<any> => {
     console.log(prompt)
-    const body = getRequestBody(prompt, schema)
-    const header = getRequestHeaders()
-
     const result = await axios
-      .post(configSettings.openAiApiRootUrl, body, header)
+      .post("/api/openai", { prompt, schema })
       .then((result: { data: any }) => {
         return result.data
       })
